@@ -12,10 +12,11 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 WORKDIR /var/www/html
 COPY composer.json composer.lock package.json ./
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts --optimize-autoloader
 RUN npm install
 
 COPY . .
+RUN composer dump-autoload --no-dev --optimize
 RUN npm run build
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
