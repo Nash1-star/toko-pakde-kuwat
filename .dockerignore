@@ -11,3 +11,4 @@ database/database.sqlite
 public/build
 tests
 phpunit.xml
+Redesign UI

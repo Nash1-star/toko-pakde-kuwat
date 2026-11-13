@@ -10,7 +10,8 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return view('accounts.index', ['users' => User::orderBy('name')->get()]);
+        $users = User::with(['shifts' => fn ($q) => $q->latest()->take(1)])->orderBy('name')->get();
+        return view('accounts.index', compact('users'));
     }
 
     public function updateProfile(Request $request)

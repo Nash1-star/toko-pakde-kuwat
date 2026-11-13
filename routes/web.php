@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/shift/close', [ShiftController::class, 'showClose'])->name('shift.close');
         Route::post('/shift/close', [ShiftController::class, 'close'])->name('shift.close.post');
 
+        Route::post('/products/{product}/restock', [ProductController::class, 'restock'])->name('products.restock');
         Route::resource('products', ProductController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
 
