@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\Shift;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -22,6 +24,29 @@ class ExampleTest extends TestCase
         $response = $this->get('/login');
         $response->assertStatus(200);
         $response->assertSee('Toko Pakde Kuwat');
+    }
+
+    public function test_legacy_pin_is_hashed_after_successful_login(): void
+    {
+        $user = User::create(['name' => 'Kasir Uji', 'pin' => '2468', 'role' => 'operator']);
+        $this->post('/login', ['user_id' => $user->id, 'pin' => '2468'])->assertRedirect('/shift/open');
+
+        $user->refresh();
+        $this->assertNotSame('2468', $user->pin);
+        $this->assertTrue(Hash::check('2468', $user->pin));
+    }
+
+    public function test_login_attempts_are_rate_limited(): void
+    {
+        $user = User::create(['name' => 'Kasir Uji', 'pin' => '2468', 'role' => 'operator']);
+        $key = 'login:'.$this->app['request']->ip();
+
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $this->post('/login', ['user_id' => $user->id, 'pin' => '0000'])->assertRedirect();
+        }
+
+        $this->post('/login', ['user_id' => $user->id, 'pin' => '2468'])->assertSessionHas('error');
+        RateLimiter::clear($key);
     }
 
     public function test_authenticated_user_can_view_dashboard(): void

@@ -17,7 +17,11 @@ class AccountController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate(['name' => ['required', 'string', 'max:100'], 'pin' => ['nullable', 'digits:4']]);
-        Auth::user()->update($request->only('name', 'pin'));
+        $attributes = ['name' => $request->name];
+        if ($request->filled('pin')) {
+            $attributes['pin'] = $request->pin;
+        }
+        Auth::user()->update($attributes);
         return back()->with('success', 'Akun berhasil diperbarui.');
     }
 
