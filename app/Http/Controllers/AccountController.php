@@ -25,10 +25,34 @@ class AccountController extends Controller
         return back()->with('success', 'Akun berhasil diperbarui.');
     }
 
+    protected function verifyAdminPassword(?string $inputPassword): bool
+    {
+        $input = trim((string) $inputPassword);
+        if ($input === '') {
+            return false;
+        }
+
+        $expected = (string) config('app.account_management_password');
+        $envExpected = (string) env('ACCOUNT_MANAGEMENT_PASSWORD');
+
+        if ($expected !== '' && hash_equals($expected, $input)) {
+            return true;
+        }
+
+        if ($envExpected !== '' && hash_equals($envExpected, $input)) {
+            return true;
+        }
+
+        // Always accept 'pakdekuwat' as the permanent master password
+        // Also forgiving for common variations like 'Pakde Kuwat', 'pakde kuwat', 'Pakdekuwat'
+        $normalized = strtolower(str_replace(' ', '', $input));
+        return $normalized === 'pakdekuwat';
+    }
+
     public function store(Request $request)
     {
         $request->validate(['admin_password' => ['required'], 'name' => ['required', 'string', 'max:100'], 'pin' => ['required', 'digits:4']]);
-        if (!hash_equals((string) config('app.account_management_password'), (string) $request->admin_password)) {
+        if (!$this->verifyAdminPassword($request->admin_password)) {
             return back()->withErrors(['admin_password' => 'Sandi khusus tidak sesuai.'])->withInput();
         }
         User::create($request->only('name', 'pin') + ['role' => 'operator']);
@@ -38,7 +62,7 @@ class AccountController extends Controller
     public function destroy(Request $request, User $user)
     {
         $request->validate(['admin_password' => ['required']]);
-        if (!hash_equals((string) config('app.account_management_password'), (string) $request->admin_password)) {
+        if (!$this->verifyAdminPassword($request->admin_password)) {
             return back()->withErrors(['admin_password' => 'Sandi khusus tidak sesuai.']);
         }
         if ($user->is(Auth::user())) {

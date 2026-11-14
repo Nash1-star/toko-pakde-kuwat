@@ -126,4 +126,30 @@ class OperationTest extends TestCase
             $this->assertStringContainsString('Shift #' . $shift->id, $content);
         }
     }
+
+    public function test_can_create_guardian_account_with_master_password(): void
+    {
+        $user = User::first();
+        $this->actingAs($user);
+
+        $res = $this->post('/accounts/guardians', [
+            'name' => 'Penjaga Baru Test',
+            'pin' => '5678',
+            'admin_password' => 'pakdekuwat',
+        ]);
+        $res->assertSessionHas('success');
+
+        $created = User::where('name', 'Penjaga Baru Test')->first();
+        $this->assertNotNull($created);
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('5678', $created->pin));
+
+        // Test with uppercase / spacing variant
+        $res2 = $this->post('/accounts/guardians', [
+            'name' => 'Penjaga Kedua Test',
+            'pin' => '9988',
+            'admin_password' => 'Pakde Kuwat',
+        ]);
+        $res2->assertSessionHas('success');
+        $this->assertNotNull(User::where('name', 'Penjaga Kedua Test')->first());
+    }
 }
