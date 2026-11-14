@@ -8,8 +8,8 @@ mkdir -p \
     "$storage_path/framework/views" \
     "$storage_path/logs"
 
-if [ "${RUN_DATABASE_MIGRATIONS:-false}" = "true" ]; then
-    php artisan migrate --force
+if [ "${RUN_DATABASE_MIGRATIONS:-true}" = "true" ]; then
+    php artisan migrate --force || true
 fi
 
 php artisan view:cache

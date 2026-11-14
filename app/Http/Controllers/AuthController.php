@@ -9,6 +9,21 @@ use Illuminate\Support\Facades\RateLimiter;
 class AuthController extends Controller
 {
     public function showLogin() {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            }
+
+            $pakde = User::firstOrNew(['name' => 'Pakde Kuwat']);
+            if (!$pakde->exists || !$pakde->pin) {
+                $pakde->pin = '1234';
+                $pakde->role = 'operator';
+                $pakde->save();
+            }
+        } catch (\Throwable $e) {
+            // Continue gracefully if database is still connecting
+        }
+
         $users = User::all();
         return view('auth.login', compact('users'));
     }

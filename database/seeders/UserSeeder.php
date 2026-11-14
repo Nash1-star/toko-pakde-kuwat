@@ -15,6 +15,16 @@ class UserSeeder extends Seeder
         );
 
         User::updateOrCreate(
+            ['name' => 'Mama'],
+            ['pin' => '1234', 'role' => 'operator']
+        );
+
+        User::updateOrCreate(
+            ['name' => 'Zefa'],
+            ['pin' => '1234', 'role' => 'operator']
+        );
+
+        User::updateOrCreate(
             ['name' => 'Naurah'],
             ['pin' => '1234', 'role' => 'operator']
         );

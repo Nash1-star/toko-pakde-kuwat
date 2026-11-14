@@ -61,6 +61,65 @@
   });
 @endphp
 
+<style>
+  .filter-pill-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-height: 42px !important;
+    padding: 0 16px !important;
+    border-radius: 9999px !important;
+    border: 1px solid #CBD5E1 !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+  }
+  .filter-pill-btn:hover {
+    border-color: #94A3B8 !important;
+  }
+  .filter-pill-btn.active {
+    border-color: #0F172A !important;
+    background: #0F172A !important;
+    color: #FFFFFF !important;
+  }
+  .filter-pill-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 9999px !important;
+    flex-shrink: 0 !important;
+  }
+  .filter-pill-btn.active .filter-pill-dot-white {
+    background: #FFFFFF !important;
+  }
+  .filter-pill-count {
+    min-width: 24px !important;
+    height: 24px !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
+    border-radius: 9999px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #EDF0F5 !important;
+    color: #0F172A !important;
+  }
+  .filter-pill-btn.active .filter-pill-count {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+  }
+  .corner-20 {
+    border-radius: 20px !important;
+  }
+</style>
+
 <div x-data="{
   filter: 'all',
   search: '',
@@ -128,114 +187,94 @@
   formatRp(n) {
     return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
   }
-}" style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px">
+}" style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
 
   <!-- Header -->
   <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
     <div style="display: flex; flex-direction: column; gap: 6px">
-      <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: #111827">Daftar Barang</h1>
-      <p style="margin: 0; font-size: 11px; color: #5B6475">
+      <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: #111827">Daftar Barang</h1>
+      <p style="margin: 0; font-size: 14px; color: #5B6475">
         {{ $products->count() }} barang · {{ $categories->count() }} kategori · nilai stok (harga beli) Rp {{ number_format($totalStockValue, 0, ',', '.') }}
       </p>
     </div>
-    <button type="button" @click="createModal = true" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 9px; border: 0; background: #2563EB; color: #FFFFFF; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.15s ease;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+    <button type="button" @click="createModal = true" class="corner-20" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; background: #2563EB; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.15s ease;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
       Tambah Barang
     </button>
   </header>
 
   <!-- Restock Notification Banner -->
   @if($restockCount > 0)
-    <section aria-label="Ringkasan stok" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 11px 13px; border-radius: 11px; background: #FDECEA; border: 1px solid #F1C4BE">
-      <div style="width: 30px; height: 30px; border-radius: 8px; background: #B42318; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"></path><path d="M12 10v4"></path><path d="M12 17.5v.01"></path></svg>
+    <section aria-label="Ringkasan stok" class="corner-20" style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 16px 20px; background: #FDECEA; border: 1px solid #F1C4BE">
+      <div style="width: 38px; height: 38px; border-radius: 12px; background: #B42318; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"></path><path d="M12 10v4"></path><path d="M12 17.5v.01"></path></svg>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 280px">
-        <span style="font-size: 12px; font-weight: 800; color: #7A1A11">{{ $restockCount }} barang harus diisi ulang</span>
-        <span style="font-size: 9px; color: #7A2E25">Total yang perlu dibeli {{ $totalPcsToBuy }} pcs · perkiraan modal Rp {{ number_format($estimatedModal, 0, ',', '.') }}</span>
+      <div style="display: flex; flex-direction: column; gap: 3px; flex: 1 1 280px">
+        <span style="font-size: 15px; font-weight: 800; color: #7A1A11">{{ $restockCount }} barang harus diisi ulang</span>
+        <span style="font-size: 13px; color: #7A2E25">Total yang perlu dibeli {{ $totalPcsToBuy }} pcs · perkiraan modal Rp {{ number_format($estimatedModal, 0, ',', '.') }}</span>
       </div>
-      <button type="button" @click="filter = 'needs'" style="min-height: 30px; padding: 0 12px; border-radius: 8px; border: 0; background: #B42318; color: #FFFFFF; font-family: inherit; font-size: 9px; font-weight: 700; cursor: pointer">
+      <button type="button" @click="filter = 'needs'" class="corner-20" style="min-height: 40px; padding: 0 16px; border: 0; background: #B42318; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">
         Tampilkan yang perlu diisi
       </button>
     </section>
   @endif
 
-  <!-- Main Card with Filter, Search & Table -->
-  <section style="background: #FFFFFF; border: 1px solid #E4E8F0; border-radius: 14px; overflow: hidden">
-    <!-- Filter bar (Matching exact layout: Pills on top row, Search & Category on row below) -->
-    <div style="display: flex; flex-direction: column; gap: 9px; padding: 11px 12px; border-bottom: 1px solid #EDF0F5">
+  <!-- Main Card with Filter, Search & Table (Persegi dengan Corner 20) -->
+  <section class="corner-20" style="background: #FFFFFF; border: 1px solid #E4E8F0; overflow: hidden">
+    <!-- Filter bar (Lonjong bulat filter pills on row 1, Persegi corner-20 search & category on row 2) -->
+    <div style="display: flex; flex-direction: column; gap: 16px; padding: 20px 24px; border-bottom: 1px solid #EDF0F5">
       
-      <!-- Row 1: Status Filter Pills -->
-      <div role="group" aria-label="Filter status stok" style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+      <!-- Row 1: Status Filter Pills (Lonjong Bulat Capsule) -->
+      <div role="group" aria-label="Filter status stok" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
         <!-- Semua -->
-        <button type="button" @click="filter = 'all'"
-          :class="filter === 'all' ? 'border-[#0F172A] bg-[#0F172A] text-white' : 'border-[#CBD5E1] bg-white text-[#0F172A]'"
-          style="display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9999px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;">
-          <span style="width: 8px; height: 8px; border-radius: 9999px;" :class="filter === 'all' ? 'bg-white' : 'bg-[#0F172A]'"></span>
+        <button type="button" @click="filter = 'all'" :class="{ 'active': filter === 'all' }" class="filter-pill-btn">
+          <span class="filter-pill-dot filter-pill-dot-white" style="background: #0F172A;"></span>
           Semua
-          <span style="min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9999px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;"
-            :class="filter === 'all' ? 'bg-white text-[#0F172A]' : 'bg-[#EDF0F5] text-[#0F172A]'"
-            x-text="count('all')"></span>
+          <span class="filter-pill-count" x-text="count('all')"></span>
         </button>
 
         <!-- Perlu diisi -->
-        <button type="button" @click="filter = 'needs'"
-          :class="filter === 'needs' ? 'border-[#0F172A] bg-[#0F172A] text-white' : 'border-[#CBD5E1] bg-white text-[#0F172A]'"
-          style="display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9999px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;">
-          <span style="width: 8px; height: 8px; border-radius: 9999px; background: #B91C1C;"></span>
+        <button type="button" @click="filter = 'needs'" :class="{ 'active': filter === 'needs' }" class="filter-pill-btn">
+          <span class="filter-pill-dot" style="background: #B91C1C;"></span>
           Perlu diisi
-          <span style="min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9999px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;"
-            :class="filter === 'needs' ? 'bg-white text-[#0F172A]' : 'bg-[#EDF0F5] text-[#0F172A]'"
-            x-text="count('needs')"></span>
+          <span class="filter-pill-count" x-text="count('needs')"></span>
         </button>
 
         <!-- Kritis -->
-        <button type="button" @click="filter = 'crit'"
-          :class="filter === 'crit' ? 'border-[#0F172A] bg-[#0F172A] text-white' : 'border-[#CBD5E1] bg-white text-[#0F172A]'"
-          style="display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9999px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;">
-          <span style="width: 8px; height: 8px; border-radius: 9999px; background: #DC2626;"></span>
+        <button type="button" @click="filter = 'crit'" :class="{ 'active': filter === 'crit' }" class="filter-pill-btn">
+          <span class="filter-pill-dot" style="background: #DC2626;"></span>
           Kritis
-          <span style="min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9999px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;"
-            :class="filter === 'crit' ? 'bg-white text-[#0F172A]' : 'bg-[#EDF0F5] text-[#0F172A]'"
-            x-text="count('crit')"></span>
+          <span class="filter-pill-count" x-text="count('crit')"></span>
         </button>
 
         <!-- Menipis -->
-        <button type="button" @click="filter = 'low'"
-          :class="filter === 'low' ? 'border-[#0F172A] bg-[#0F172A] text-white' : 'border-[#CBD5E1] bg-white text-[#0F172A]'"
-          style="display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9999px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;">
-          <span style="width: 8px; height: 8px; border-radius: 9999px; background: #D97706;"></span>
+        <button type="button" @click="filter = 'low'" :class="{ 'active': filter === 'low' }" class="filter-pill-btn">
+          <span class="filter-pill-dot" style="background: #D97706;"></span>
           Menipis
-          <span style="min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9999px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;"
-            :class="filter === 'low' ? 'bg-white text-[#0F172A]' : 'bg-[#EDF0F5] text-[#0F172A]'"
-            x-text="count('low')"></span>
+          <span class="filter-pill-count" x-text="count('low')"></span>
         </button>
 
         <!-- Aman -->
-        <button type="button" @click="filter = 'ok'"
-          :class="filter === 'ok' ? 'border-[#0F172A] bg-[#0F172A] text-white' : 'border-[#CBD5E1] bg-white text-[#0F172A]'"
-          style="display: inline-flex; align-items: center; gap: 6px; min-height: 29px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9999px; font-family: inherit; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;">
-          <span style="width: 8px; height: 8px; border-radius: 9999px; background: #2563EB;"></span>
+        <button type="button" @click="filter = 'ok'" :class="{ 'active': filter === 'ok' }" class="filter-pill-btn">
+          <span class="filter-pill-dot" style="background: #2563EB;"></span>
           Aman
-          <span style="min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9999px; font-size: 9px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;"
-            :class="filter === 'ok' ? 'bg-white text-[#0F172A]' : 'bg-[#EDF0F5] text-[#0F172A]'"
-            x-text="count('ok')"></span>
+          <span class="filter-pill-count" x-text="count('ok')"></span>
         </button>
       </div>
 
-      <!-- Row 2: Search Box & Category Dropdown (Smooth Rounded Corners, Not Lancip) -->
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+      <!-- Row 2: Search Box & Category Dropdown (Persegi dengan Corner 20) -->
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
         <!-- Search Input -->
-        <label style="display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9px; background: #FFFFFF; width: 164px; max-width: 100%; box-sizing: border-box;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
-          <input type="search" x-model="search" placeholder="Cari nama atau barcode" style="border: 0; outline: none; font-family: inherit; font-size: 9px; color: #0F172A; width: 100%; background: transparent;">
+        <label class="corner-20" style="display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 18px; border: 1px solid #CBD5E1; background: #FFFFFF; width: 320px; max-width: 100%; box-sizing: border-box;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+          <input type="search" x-model="search" placeholder="Cari nama atau barcode" style="border: 0; outline: none; font-family: inherit; font-size: 14px; color: #0F172A; width: 100%; background: transparent;">
         </label>
         
         <!-- Category Dropdown Select -->
-        <div style="position: relative; display: inline-flex; align-items: center; height: 32px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 9px; background: #FFFFFF; cursor: pointer; box-sizing: border-box;">
-          <span style="font-size: 9px; color: #64748B; margin-right: 6px;">Kategori</span>
-          <span style="font-size: 9px; font-weight: 700; color: #0F172A; margin-right: 8px;" x-text="categoryFilter === 'all' ? 'Semua' : (document.querySelector('#catFilterSelect option[value=\'' + categoryFilter + '\']')?.text || 'Semua')">Semua</span>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+        <div class="corner-20" style="position: relative; display: inline-flex; align-items: center; height: 48px; padding: 0 18px; border: 1px solid #CBD5E1; background: #FFFFFF; cursor: pointer; box-sizing: border-box;">
+          <span style="font-size: 14px; color: #64748B; margin-right: 8px;">Kategori</span>
+          <span style="font-size: 14px; font-weight: 700; color: #0F172A; margin-right: 12px;" x-text="categoryFilter === 'all' ? 'Semua' : (document.querySelector('#catFilterSelect option[value=\'' + categoryFilter + '\']')?.text || 'Semua')">Semua</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
           <select id="catFilterSelect" x-model="categoryFilter" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
             <option value="all">Semua</option>
             @foreach($categories as $cat)

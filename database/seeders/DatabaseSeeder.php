@@ -15,8 +15,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Users
-        User::create(['name' => 'Mama', 'pin' => '1234', 'role' => 'operator']);
-        User::create(['name' => 'Zefa', 'pin' => '1234', 'role' => 'operator']);
+        User::updateOrCreate(
+            ['name' => 'Pakde Kuwat'],
+            ['pin' => '1234', 'role' => 'operator']
+        );
+        User::updateOrCreate(
+            ['name' => 'Mama'],
+            ['pin' => '1234', 'role' => 'operator']
+        );
+        User::updateOrCreate(
+            ['name' => 'Zefa'],
+            ['pin' => '1234', 'role' => 'operator']
+        );
 
         // Categories
         $catSembako = Category::create(['name' => 'Sembako', 'description' => 'Beras, Minyak, Gula, dll']);
