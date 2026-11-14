@@ -8,7 +8,7 @@ mkdir -p \
     "$storage_path/framework/views" \
     "$storage_path/logs"
 
-if [ "${VERCEL_RUN_MIGRATIONS:-false}" = "true" ]; then
+if [ "${RUN_DATABASE_MIGRATIONS:-false}" = "true" ]; then
     php artisan migrate --force
 fi
 

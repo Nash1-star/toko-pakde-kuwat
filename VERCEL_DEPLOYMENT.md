@@ -27,7 +27,7 @@ Add these environment variables to the Vercel **Production** environment:
 | `APP_URL` | The deployed HTTPS URL |
 | `ACCOUNT_MANAGEMENT_PASSWORD` | A strong, unique password |
 | `DB_URL` | The pooled PostgreSQL connection string |
-| `VERCEL_RUN_MIGRATIONS` | Set to `true` for the first production deployment only |
+| `RUN_DATABASE_MIGRATIONS` | Set to `true` for the first production deployment only |
 
 `APP_ENV`, `APP_DEBUG`, database/session/cache drivers, secure cookies, and the
 temporary storage path are set by the Vercel container image.
@@ -35,7 +35,7 @@ temporary storage path are set by the Vercel container image.
 ## 3. Deploy and initialize
 
 Deploy from Vercel. On the first production start, the container runs
-`php artisan migrate --force` when `VERCEL_RUN_MIGRATIONS=true`. After the
+`php artisan migrate --force` when `RUN_DATABASE_MIGRATIONS=true`. After the
 database tables have been created, remove that variable or set it to `false`
 and redeploy. Do not enable it for Preview deployments.
 
