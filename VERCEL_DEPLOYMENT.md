@@ -2,7 +2,7 @@
 
 This deployment uses Vercel's container runtime with FrankenPHP and an external
 PostgreSQL database. The local SQLite database is intentionally excluded; a new
-production database starts empty.
+production database starts empty unless the local data is imported separately.
 
 See Vercel's [Laravel with Docker guide](https://vercel.com/kb/guide/laravel-php-with-docker)
 for platform prerequisites and current container-runtime availability.
@@ -16,8 +16,9 @@ project root set to the repository root so Vercel can read `vercel.json` and
 ## 2. Create the production database
 
 Create a PostgreSQL database with Neon or another managed provider. Use the
-provider's pooled PostgreSQL connection string for `DB_URL`; do not commit it
-or paste it into chat.
+provider's direct (non-pooled) PostgreSQL connection string for `DB_URL`,
+especially for the first migration run. Do not commit the URL or paste it into
+chat.
 
 Add these environment variables to the Vercel **Production** environment:
 
@@ -26,7 +27,7 @@ Add these environment variables to the Vercel **Production** environment:
 | `APP_KEY` | Generate locally with `php artisan key:generate --show`, then add the output as a Vercel secret |
 | `APP_URL` | The deployed HTTPS URL |
 | `ACCOUNT_MANAGEMENT_PASSWORD` | A strong, unique password |
-| `DB_URL` | The pooled PostgreSQL connection string |
+| `DB_URL` | The direct PostgreSQL connection string |
 | `RUN_DATABASE_MIGRATIONS` | Set to `true` for the first production deployment only |
 
 `APP_ENV`, `APP_DEBUG`, database/session/cache drivers, secure cookies, and the
@@ -48,9 +49,19 @@ VALUES ('Operator', '<choose-a-unique-pin>', 'operator', NOW(), NOW());
 ```
 
 Do not run the default seeders in production: they contain demo users with the
-PIN `1234`. The current login implementation stores PINs as plain text and does
-not rate-limit failed attempts; use a unique PIN and do not expose this app to
-untrusted users until authentication is hardened.
+PIN `1234`. Operator PINs are hashed on save, and legacy plain-text PINs are
+upgraded to hashes after a successful login. Login attempts are rate-limited.
+
+## Import existing SQLite data
+
+The Vercel container filesystem is temporary, so the local
+`database/database.sqlite` file is never used by the deployed app. To reuse data
+from a previous local run, copy records into PostgreSQL after migrations and
+before opening the app to operators. Preserve primary keys and insert parent
+records first: users and categories, then products and shifts, then transactions,
+transaction details, and stock mutations. Do not import the local `migrations`
+table; let the production database track its own migrations. Keep the local
+SQLite file as a backup until record counts and login have been verified.
 
 ## Runtime notes
 
