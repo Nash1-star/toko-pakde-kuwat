@@ -20,6 +20,11 @@ class AuthController extends Controller
                 $pakde->role = 'operator';
                 $pakde->save();
             }
+
+            // Ensure catalog is populated if empty
+            if (\App\Models\Product::count() === 0) {
+                (new \Database\Seeders\CatalogSeeder())->run();
+            }
         } catch (\Throwable $e) {
             // Continue gracefully if database is still connecting
         }
