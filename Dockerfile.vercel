@@ -44,6 +44,7 @@ RUN chmod 0755 /usr/local/bin/start-vercel \
 ENV APP_ENV=production \
     APP_DEBUG=false \
     APP_TIMEZONE=Asia/Jakarta \
+    ACCOUNT_MANAGEMENT_PASSWORD=pakdekuwat \
     DB_CONNECTION=pgsql \
     SESSION_DRIVER=database \
     SESSION_ENCRYPT=true \

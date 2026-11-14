@@ -32,23 +32,31 @@
     }
     .pos-quick-cash-pill {
         min-height: 44px !important;
-        padding: 0 16px !important;
-        border-radius: 9999px !important;
-        border: 1px solid #CBD5E1 !important;
+        padding: 0 10px !important;
+        border-radius: 20px !important;
+        border: 1.5px solid #CBD5E1 !important;
         background: #FFFFFF !important;
         color: #0F172A !important;
         font-family: inherit !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
         font-weight: 700 !important;
         cursor: pointer !important;
         transition: all 0.15s ease !important;
         text-align: center !important;
         box-sizing: border-box !important;
         outline: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     .pos-quick-cash-pill:hover {
         background: #F8FAFC !important;
         border-color: #94A3B8 !important;
+    }
+    .pos-product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 14px !important;
     }
     .pos-product-card {
         display: flex !important;
@@ -255,7 +263,7 @@
   },
 
   setQuickPaid(amount) {
-    this.cashReceived = String(amount);
+    this.cashReceived = Number(amount || 0).toLocaleString('id-ID');
   },
 
   updateQuickCash() {
@@ -264,8 +272,18 @@
       return;
     }
     if (this.method === 'Tunai' && (this.parsedCash === 0 || this.parsedCash < this.totalAmount)) {
-      this.cashReceived = String(this.totalAmount);
+      this.cashReceived = Number(this.totalAmount).toLocaleString('id-ID');
     }
+  },
+
+  onCashInput(e) {
+    const raw = e.target.value.replace(/\D/g, '');
+    if (!raw) {
+      this.cashReceived = '';
+      return;
+    }
+    const val = parseInt(raw, 10);
+    this.cashReceived = val.toLocaleString('id-ID');
   },
 
   handleBarcodeScan(e) {
@@ -331,7 +349,7 @@
     </div>
 
     <!-- Product Cards Grid (Persegi dengan Corner 20) -->
-    <div class="pos-product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px">
+    <div class="pos-product-grid" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
       <template x-for="p in filteredProducts" :key="p.id">
         <div role="button" tabindex="0" @click="addToCart(p)" @keydown.enter.prevent="addToCart(p)" @keydown.space.prevent="addToCart(p)"
           :aria-label="'Tambah ' + p.name + ' ke keranjang'" :aria-disabled="p.stock <= 0"
@@ -357,14 +375,9 @@
           <!-- Price & Add Button -->
           <span style="display: flex; justify-content: space-between; align-items: center; width: 100%">
             <span style="font-size: 18px; font-weight: 800; color: #2563EB" x-text="formatRp(p.price)"></span>
-            <span x-show="!cart[p.id]" style="width: 34px; height: 34px; border-radius: 10px; background: #2563EB; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; transition: background 0.15s ease;">
+            <span style="width: 32px; height: 32px; border-radius: 9px; background: #2563EB; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; transition: background 0.15s ease;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
             </span>
-            <button type="button" x-show="cart[p.id]" @click.stop="removeFromCart(p.id)" @keydown.enter.stop @keydown.space.stop
-              :aria-label="'Batalkan pilihan ' + p.name" title="Batalkan pilihan"
-              style="width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; background: #FEE2E2; color: #B91C1C; cursor: pointer">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-            </button>
           </span>
         </div>
       </template>
@@ -396,17 +409,17 @@
             </span>
           </div>
 
-          <div class="corner-20" style="display: flex; align-items: center; gap: 4px; background: #F1F5F9; padding: 2px 4px">
-            <button type="button" @click="decrement(c.id)" :aria-label="'Kurangi ' + c.name" style="width: 32px; height: 32px; border: 0; border-radius: 10px; background: #FFFFFF; color: #0F172A; font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">−</button>
-            <input type="number" min="1" step="1" :max="c.maxStock" x-model="quantityDraft[c.id]" @input="setQuantity(c.id)" @blur="normalizeQuantity(c.id)" :aria-label="'Jumlah ' + c.name" style="width: 44px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: transparent; text-align: center; font-family: inherit; font-size: 14px; font-weight: 800; color: #0F172A; outline: none;">
-            <button type="button" @click="increment(c.id)" :aria-label="'Tambah ' + c.name" style="width: 32px; height: 32px; border: 0; border-radius: 10px; background: #FFFFFF; color: #0F172A; font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">+</button>
+          <div style="display: flex; align-items: center; gap: 4px; background: #F1F5F9; border-radius: 12px; padding: 3px 6px">
+            <button type="button" @click="decrement(c.id)" :aria-label="'Kurangi ' + c.name" style="width: 28px; height: 28px; border: 0; border-radius: 8px; background: #FFFFFF; color: #0F172A; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center;">−</button>
+            <input type="number" min="1" step="1" :max="c.maxStock" x-model="quantityDraft[c.id]" @input="setQuantity(c.id)" @blur="normalizeQuantity(c.id)" :aria-label="'Jumlah ' + c.name" style="width: 32px; height: 28px; padding: 0; border: 0; background: transparent; text-align: center; font-family: inherit; font-size: 14px; font-weight: 800; color: #0F172A; outline: none;">
+            <button type="button" @click="increment(c.id)" :aria-label="'Tambah ' + c.name" style="width: 28px; height: 28px; border: 0; border-radius: 8px; background: #FFFFFF; color: #0F172A; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center;">+</button>
           </div>
         </div>
       </template>
     </div>
 
     <!-- Checkout Form Details -->
-    <form action="{{ route('pos.checkout') }}" method="POST" style="padding: 22px; background: #F8FAFD; border-top: 1px solid #EDF0F5; display: flex; flex-direction: column; gap: 16px">
+    <form action="{{ route('pos.checkout') }}" method="POST" style="padding: 22px; background: #FFFFFF; border-top: 1px solid #EDF0F5; display: flex; flex-direction: column; gap: 16px">
       @csrf
       <input type="hidden" name="cart" :value="cartPayload">
       <input type="hidden" name="payment_method" :value="method">
@@ -415,7 +428,7 @@
 
       <div style="display: flex; justify-content: space-between; align-items: baseline">
         <span style="font-size: 15px; font-weight: 600; color: #475569">Total</span>
-        <span style="font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: #0F172A" x-text="formatRp(totalAmount)"></span>
+        <span style="font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: #0F172A" x-text="formatRp(totalAmount)"></span>
       </div>
 
       <!-- Payment Method Selector (Persegi dengan Corner 20) -->
@@ -444,41 +457,55 @@
       <template x-if="method === 'Tunai'">
         <div style="display: flex; flex-direction: column; gap: 12px">
           <label for="paid" style="font-size: 14px; font-weight: 700; color: #0F172A">Uang diterima</label>
-          <div class="corner-20" style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 18px; border: 2px solid #0F172A; background: #FFFFFF; box-sizing: border-box;">
+          <div class="corner-20" style="display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 18px; border: 2.5px solid #0F172A; background: #FFFFFF; box-sizing: border-box;">
             <span style="font-size: 20px; font-weight: 700; color: #475569">Rp</span>
-            <input id="paid" type="text" inputmode="numeric" x-model="cashReceived" placeholder="0" style="flex: 1; min-width: 0; border: 0; outline: none; font-family: inherit; font-size: 22px; font-weight: 800; color: #0F172A; background: transparent">
+            <input id="paid" type="text" inputmode="numeric" x-model="cashReceived" @input="onCashInput" placeholder="0" style="flex: 1; min-width: 0; border: 0; outline: none; font-family: inherit; font-size: 24px; font-weight: 800; color: #0F172A; background: transparent">
           </div>
 
-          <!-- Quick Cash Pill Buttons (Lonjong Bulat Capsule) -->
-          <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+          <!-- Quick Cash Buttons (Persegi dengan Corner 20) -->
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
             <button type="button" @click="setQuickPaid(totalAmount)" class="pos-quick-cash-pill">
               Uang pas
             </button>
-            <button type="button" @click="setQuickPaid(10000)" class="pos-quick-cash-pill">
-              10rb
-            </button>
-            <button type="button" @click="setQuickPaid(20000)" class="pos-quick-cash-pill">
-              20rb
-            </button>
-            <button type="button" @click="setQuickPaid(50000)" class="pos-quick-cash-pill">
-              50rb
-            </button>
-            <button type="button" @click="setQuickPaid(100000)" class="pos-quick-cash-pill">
-              100rb
-            </button>
+            <template x-if="totalAmount <= 50000">
+              <div style="display: contents">
+                <button type="button" @click="setQuickPaid(10000)" class="pos-quick-cash-pill">
+                  10rb
+                </button>
+                <button type="button" @click="setQuickPaid(20000)" class="pos-quick-cash-pill">
+                  20rb
+                </button>
+                <button type="button" @click="setQuickPaid(50000)" class="pos-quick-cash-pill">
+                  50rb
+                </button>
+              </div>
+            </template>
+            <template x-if="totalAmount > 50000">
+              <div style="display: contents">
+                <button type="button" @click="setQuickPaid(50000)" class="pos-quick-cash-pill">
+                  50rb
+                </button>
+                <button type="button" @click="setQuickPaid(100000)" class="pos-quick-cash-pill">
+                  100rb
+                </button>
+                <button type="button" @click="setQuickPaid(200000)" class="pos-quick-cash-pill">
+                  200rb
+                </button>
+              </div>
+            </template>
           </div>
 
           <!-- Kembalian / Uang Kurang Indicator (Persegi dengan Corner 20) -->
           <div :class="changeAmount < 0 ? 'bg-[#FEE2E2] text-[#B91C1C]' : 'bg-[#E8EFFE] text-[#1D4ED8]'" class="corner-20" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px;">
-            <span :class="changeAmount < 0 ? 'text-[#B91C1C]' : 'text-[#2563EB]'" style="font-size: 14px; font-weight: 700;" x-text="changeAmount < 0 ? 'Uang kurang' : 'Kembalian'"></span>
-            <span style="font-size: 22px; font-weight: 800;" x-text="formatRp(Math.abs(changeAmount))"></span>
+            <span :class="changeAmount < 0 ? 'text-[#B91C1C]' : 'text-[#2563EB]'" style="font-size: 15px; font-weight: 700;" x-text="changeAmount < 0 ? 'Uang kurang' : 'Kembalian'"></span>
+            <span style="font-size: 24px; font-weight: 800;" x-text="formatRp(Math.abs(changeAmount))"></span>
           </div>
         </div>
       </template>
 
       <!-- Submit Checkout Button (Persegi dengan Corner 20) -->
-      <button type="submit" :disabled="!canCheckout" :class="!canCheckout ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'" class="corner-20" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; border: 0; background: #2563EB; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 800; transition: background 0.15s ease; box-shadow: 0 1px 3px rgba(37,99,235,0.2);" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+      <button type="submit" :disabled="!canCheckout" :class="!canCheckout ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'" class="corner-20" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border: 0; background: #2563EB; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; transition: background 0.15s ease; box-shadow: 0 2px 6px rgba(37,99,235,0.25);" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
         Selesaikan Transaksi
       </button>
     </form>

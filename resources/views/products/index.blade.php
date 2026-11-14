@@ -94,7 +94,7 @@
     border-radius: 9999px !important;
     flex-shrink: 0 !important;
   }
-  .filter-pill-btn.active .filter-pill-dot-white {
+  .filter-pill-btn.active .filter-pill-dot {
     background: #FFFFFF !important;
   }
   .filter-pill-count {
@@ -228,7 +228,7 @@
       <div role="group" aria-label="Filter status stok" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
         <!-- Semua -->
         <button type="button" @click="filter = 'all'" :class="{ 'active': filter === 'all' }" class="filter-pill-btn">
-          <span class="filter-pill-dot filter-pill-dot-white" style="background: #0F172A;"></span>
+          <span class="filter-pill-dot" style="background: #0F172A;"></span>
           Semua
           <span class="filter-pill-count" x-text="count('all')"></span>
         </button>

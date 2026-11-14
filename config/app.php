@@ -99,9 +99,7 @@ return [
 
     'key' => env('APP_KEY'),
 
-    'account_management_password' => env('ACCOUNT_MANAGEMENT_PASSWORD'),
-
-    'account_management_password' => env('ACCOUNT_MANAGEMENT_PASSWORD'),
+    'account_management_password' => env('ACCOUNT_MANAGEMENT_PASSWORD', 'pakdekuwat'),
 
     'previous_keys' => [
         ...array_filter(
